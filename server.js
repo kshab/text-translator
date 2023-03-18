@@ -1,7 +1,9 @@
 const express = require('express');
 const Scraper = require("./utils/scraper");
+const Translator = require("./utils/translator");
 
 const PORT = process.env.port || 3000;
+const API_KEY = process.env.OPENAI_API_KEY;
 
 const app = express();
 
@@ -10,7 +12,9 @@ app.get('/', async (req, res) => {
   const scraper = new Scraper();
   const paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
 
-  const translation = await [paragraphsToTranslate[0], paragraphsToTranslate[2]];
+  const translator = new Translator(API_KEY);
+  const testParagraphs = [paragraphsToTranslate[0], paragraphsToTranslate[2]];
+  const translation = await translator.getTranslation(testParagraphs);
 
   res.send({ translation });
 });
