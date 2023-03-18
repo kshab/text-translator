@@ -2,7 +2,7 @@ const express = require('express');
 const Scraper = require("./utils/scraper");
 const Translator = require("./utils/translator");
 
-const PORT = process.env.port || 3000;
+const PORT = process.env.port || 8000;
 const API_KEY = process.env.OPENAI_API_KEY;
 
 const app = express();
