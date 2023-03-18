@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 
 class Scraper {
-  #maxPromptLength = 100;
+  #maxPromptLength = 150;
   #paragraphSeparator = '\n\n';
 
   async getParagraphsToTranslate(url) {

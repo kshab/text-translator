@@ -13,7 +13,7 @@ app.get('/', async (req, res) => {
   const paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
 
   const translator = new Translator(API_KEY);
-  const testParagraphs = [paragraphsToTranslate[0], paragraphsToTranslate[2]];
+  const testParagraphs = paragraphsToTranslate.slice(0, 5);
   const translation = await translator.getTranslation(testParagraphs);
 
   res.send({ translation });
