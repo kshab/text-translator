@@ -2,25 +2,21 @@ const { Configuration, OpenAIApi } = require("openai");
 
 class Translator {
   #openai;
-  #promptTitle = 'Translate this text into Russian:\n\n';
+  #promptTitle = 'Translate this text into Russian:';
 
   constructor(apiKey) {
     const config = new Configuration({ apiKey });
     this.#openai = new OpenAIApi(config);
   }
 
-  async getTranslation(paragraphs) {
-    const translatedParagraphs = [];
-
-    for (const p of paragraphs) {
-      const prompt = this.#promptTitle + p;
-      const response = await this.#createCompletion(prompt);
-      translatedParagraphs.push(response);
+  async getTranslation(prompt) {
+    const fullPrompt = this.#promptTitle + prompt;
+    try {
+      const response = await this.#createCompletion(fullPrompt);
+      return response;
+    } catch (err) {
+      console.error(err);
     }
-
-    const translation = translatedParagraphs.join();
-
-    return await translation;
   }
 
   async #createCompletion(prompt) {

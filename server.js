@@ -3,43 +3,66 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const Scraper = require("./utils/scraper");
 const Translator = require("./utils/translator");
+const { saveResult, createFile, getFileContent } = require("./utils/fs");
 
 dotenv.config();
 
 const API_KEY = process.env.OPENAI_API_KEY;
 const PORT = process.env.PORT || 3000;
 
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const runTranslation = async (url) => {
+const runTranslation = async (url, filePath) => {
   const scraper = new Scraper();
   const paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
 
-  const translator = new Translator(API_KEY);
-  const testParagraphs = paragraphsToTranslate.slice(0, 2);
-  const translation = await translator.getTranslation(testParagraphs);
+  console.log('paragraphsToTranslate ', paragraphsToTranslate.length);
 
-  console.log(translation);
+  const translator = new Translator(API_KEY);
+
+  const translatedParagraphs = [];
+
+  let count = 0;
+
+  for (const p of paragraphsToTranslate) {
+    const response = await translator.getTranslation(p);
+    translatedParagraphs.push(response);
+
+    console.timeLog('Translation');
+    console.log('Translation ', ++count);
+
+    saveResult(response, filePath);
+  }
 };
 
 app.get('/', async (req, res) => {
-  const url = 'https://medium.com/@x_TomCooper_x/ukraine-war-15-march-2023-standstill-8746dc3160d';
-  const scraper = new Scraper();
-  const paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
+  const response = 'Hello!';
+  res.send(response);
+});
 
-  const translator = new Translator(API_KEY);
-  const testParagraphs = paragraphsToTranslate.slice(0, 2);
-  const translation = await translator.getTranslation(testParagraphs);
-
-  res.send({ translation });
+app.get('/translation', async (req, res) => {
+  const translation = getFileContent('translation.json');
+  res.json(JSON.parse(translation));
 });
 
 app.post('/', async (req, res) => {
   res.end('Got you!')
+
+  console.time('Translation');
+  console.log('Translation start');
+
   const url = req.body.url;
-  runTranslation(url);
+  const filePath = 'translation.json';
+
+  createFile(filePath);
+
+  await runTranslation(url, filePath);
+
+  console.timeEnd('Translation');
+  console.log('Translation end');
 });
 
 app.listen(PORT, () => console.log(`Server is runnint on port: ${PORT}`));

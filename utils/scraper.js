@@ -2,8 +2,8 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 
 class Scraper {
-  #maxPromptLength = 150;
-  #paragraphSeparator = '\n\n';
+  #maxPromptLength = 1000;
+  #paragraphSeparator = '\u000A';
 
   async getParagraphsToTranslate(url) {
     try {
@@ -16,9 +16,7 @@ class Scraper {
         paragraphs.push($(p).text());
       });
 
-      const promptBodies = this.#getPromptBodies(paragraphs);
-
-      return promptBodies;
+      return paragraphs;
     } catch (error) {
       console.error(error);
     }
