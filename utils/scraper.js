@@ -9,7 +9,7 @@ class Scraper {
     try {
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
-      const foundElements = $('main article section p');
+      const foundElements = $('#main article .available-content p');
       const paragraphs = [];
 
       foundElements.each((i, p) => {
