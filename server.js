@@ -61,7 +61,7 @@ app.post('/', async (req, res) => {
     console.log(req.body.data);
     console.log(typeof req.body.data);
     const paragraphsToTranslate = JSON.parse(req.body.data);
-    console.log( paragraphsToTranslate );
+    console.log( {paragraphsToTranslate} );
     console.log( paragraphsToTranslate.length );
 
     // await runTranslation(url, filePath);
