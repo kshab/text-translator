@@ -56,11 +56,12 @@ app.get('/translation', async (req, res) => {
 
 app.post('/', async (req, res) => {
   res.end('Got you!')
+  const filePath = 'translation.json';
 
   if (req.body.data) {
     const paragraphsToTranslate = req.body.data;
 
-    await runTranslation(url, filePath, paragraphsToTranslate);
+    await runTranslation('', filePath, paragraphsToTranslate);
     return;
   }
 
@@ -68,7 +69,6 @@ app.post('/', async (req, res) => {
   console.log('Translation start');
 
   const url = req.body.url;
-  const filePath = 'translation.json';
 
   createFile(filePath);
 
