@@ -51,12 +51,17 @@ app.get('/translation', async (req, res) => {
 app.post('/', async (req, res) => {
   res.end('Got you!')
 
+  console.log('body ', req.body);
+  console.log('payload ', req.body.payload);
+
   if (req.body.payload) {
     console.log('payload ', req.body.payload);
     const paragraphsToTranslate = JSON.parse(req.body.payload);
     console.log( {paragraphsToTranslate} );
     return;
   }
+
+  return;
 
   console.time('Translation');
   console.log('Translation start');
