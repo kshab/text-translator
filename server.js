@@ -15,9 +15,13 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const runTranslation = async (url, filePath) => {
-  const scraper = new Scraper();
-  const paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
+const runTranslation = async (url, filePath, paragraphs) => {
+  let paragraphsToTranslate = [];
+
+  if (!paragraphs) {
+    const scraper = new Scraper();
+    paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
+  }
 
   console.log('paragraphsToTranslate ', paragraphsToTranslate.length);
 
@@ -55,6 +59,8 @@ app.post('/', async (req, res) => {
     const paragraphsToTranslate = JSON.parse(req.body.data);
     console.log( paragraphsToTranslate );
     console.log( paragraphsToTranslate.length );
+
+    await runTranslation(url, filePath);
     return;
   }
 
