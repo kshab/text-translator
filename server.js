@@ -15,10 +15,10 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const runTranslation = async (url, filePath, paragraphs) => {
+const runTranslation = async (url, filePath, paragraphs = []) => {
   let paragraphsToTranslate = [];
 
-  if (!paragraphs) {
+  if (!paragraphs.length) {
     const scraper = new Scraper();
     paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
   } else {
@@ -60,9 +60,7 @@ app.post('/', async (req, res) => {
   if (req.body.data) {
     const paragraphsToTranslate = req.body.data;
 
-    console.log({paragraphsToTranslate});
-
-    // await runTranslation(url, filePath);
+    await runTranslation(url, filePath, paragraphsToTranslate);
     return;
   }
 
