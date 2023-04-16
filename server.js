@@ -21,6 +21,8 @@ const runTranslation = async (url, filePath, paragraphs) => {
   if (!paragraphs) {
     const scraper = new Scraper();
     paragraphsToTranslate = await scraper.getParagraphsToTranslate(url);
+  } else {
+    paragraphsToTranslate = paragraphs;
   }
 
   console.log('paragraphsToTranslate ', paragraphsToTranslate.length);
