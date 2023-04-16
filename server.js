@@ -58,11 +58,9 @@ app.post('/', async (req, res) => {
   res.end('Got you!')
 
   if (req.body.data) {
-    console.log(req.body.data);
-    console.log(typeof req.body.data);
-    const paragraphsToTranslate = JSON.parse(req.body.data);
-    console.log( {paragraphsToTranslate} );
-    console.log( paragraphsToTranslate.length );
+    const paragraphsToTranslate = req.body.data;
+
+    console.log({paragraphsToTranslate});
 
     // await runTranslation(url, filePath);
     return;
