@@ -15,19 +15,21 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const translateAndSaveParagraph = async (paragraph, translator, filePath) => {
+const translateAndSaveParagraphs = async (paragraphs, translator, filePath) => {
   const translatedParagraphs = [];
-  const response = await translator.getTranslation(paragraph);
-  const trimmedTranslatedParagraph = response.replace('\n\n', '\u00a0');
-
   let count = 0;
 
-  translatedParagraphs.push(trimmedTranslatedParagraph);
+  for (const p of paragraphs) {
+    const response = await translator.getTranslation(p);
+    const trimmedTranslatedParagraph = response.replace('\n\n', '\u00a0');
 
-  console.timeLog('Translation');
-  console.log('Translation ', ++count);
+    translatedParagraphs.push(trimmedTranslatedParagraph);
 
-  saveResult(trimmedTranslatedParagraph, filePath);
+    console.timeLog('Translation');
+    console.log('Translation ', ++count);
+
+    saveResult(trimmedTranslatedParagraph, filePath);
+  }
 };
 
 const runTranslation = async (url, filePath, paragraphs = []) => {
@@ -41,9 +43,7 @@ const runTranslation = async (url, filePath, paragraphs = []) => {
     paragraphsToTranslate = paragraphs;
   }
 
-  for (const p of paragraphsToTranslate) {
-    translateAndSaveParagraph(p, translator, filePath)
-  }
+  translateAndSaveParagraphs(paragraphsToTranslate, translator, filePath);
 };
 
 app.get('/', async (req, res) => {
