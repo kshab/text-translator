@@ -51,6 +51,12 @@ app.get('/', async (req, res) => {
 
 app.get('/translation', async (req, res) => {
   const translation = getFileContent('translation.json');
+
+  if (!translation) {
+    res.json('Not found');
+    return;
+  }
+
   res.json(JSON.parse(translation));
 });
 
