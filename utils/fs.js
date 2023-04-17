@@ -1,5 +1,5 @@
 
-const { writeFile, readFile, writeFileSync, readFileSync } = require('fs');
+const { writeFile, readFile, writeFileSync, readFileSync, existsSync } = require('fs');
 
 const saveResult = async (translation, filePath) => {
   readFile(filePath, (err, data) => {
@@ -31,4 +31,4 @@ const getFileContent = (filePath) => {
   return readFileSync(filePath);
 };
 
-module.exports = { saveResult, createFile, getFileContent };
+module.exports = { saveResult, createFile, getFileContent, existsSync };

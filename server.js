@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const Scraper = require("./utils/scraper");
 const Translator = require("./utils/translator");
-const { saveResult, createFile, getFileContent } = require("./utils/fs");
+const { saveResult, createFile, getFileContent, existsSync } = require("./utils/fs");
 
 dotenv.config();
 
@@ -52,12 +52,13 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/translation', async (req, res) => {
-  const translation = getFileContent('translation.json');
 
-  if (!translation) {
-    res.json('Not found');
+  if (!existsSync()) {
+    res.json('No translation found');
     return;
   }
+
+  const translation = getFileContent('translation.json');
 
   res.json(JSON.parse(translation));
 });
