@@ -25,8 +25,6 @@ const runTranslation = async (url, filePath, paragraphs = []) => {
     paragraphsToTranslate = paragraphs;
   }
 
-  console.log('paragraphsToTranslate ', paragraphsToTranslate.length);
-
   const translator = new Translator(API_KEY);
 
   const translatedParagraphs = [];
@@ -35,12 +33,14 @@ const runTranslation = async (url, filePath, paragraphs = []) => {
 
   for (const p of paragraphsToTranslate) {
     const response = await translator.getTranslation(p);
-    translatedParagraphs.push(response);
+    const updatedResponse = response.replace('\n\n', '\u00a0');
+
+    translatedParagraphs.push(updatedResponse);
 
     console.timeLog('Translation');
     console.log('Translation ', ++count);
 
-    saveResult(response, filePath);
+    saveResult(updatedResponse, filePath);
   }
 };
 
@@ -60,7 +60,7 @@ app.post('/', async (req, res) => {
 
   if (req.body.data) {
     const paragraphsToTranslate = req.body.data;
-
+    createFile(filePath);
     await runTranslation('', filePath, paragraphsToTranslate);
     return;
   }
