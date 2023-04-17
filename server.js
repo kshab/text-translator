@@ -15,7 +15,23 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const translateAndSaveParagraph = async (paragraph, translator, filePath) => {
+  const translatedParagraphs = [];
+  const response = await translator.getTranslation(paragraph);
+  const trimmedTranslatedParagraph = response.replace('\n\n', '\u00a0');
+
+  let count = 0;
+
+  translatedParagraphs.push(trimmedTranslatedParagraph);
+
+  console.timeLog('Translation');
+  console.log('Translation ', ++count);
+
+  saveResult(trimmedTranslatedParagraph, filePath);
+};
+
 const runTranslation = async (url, filePath, paragraphs = []) => {
+  const translator = new Translator(API_KEY);
   let paragraphsToTranslate = [];
 
   if (!paragraphs.length) {
@@ -25,22 +41,8 @@ const runTranslation = async (url, filePath, paragraphs = []) => {
     paragraphsToTranslate = paragraphs;
   }
 
-  const translator = new Translator(API_KEY);
-
-  const translatedParagraphs = [];
-
-  let count = 0;
-
   for (const p of paragraphsToTranslate) {
-    const response = await translator.getTranslation(p);
-    const updatedResponse = response.replace('\n\n', '\u00a0');
-
-    translatedParagraphs.push(updatedResponse);
-
-    console.timeLog('Translation');
-    console.log('Translation ', ++count);
-
-    saveResult(updatedResponse, filePath);
+    translateAndSaveParagraph(p, translator, filePath)
   }
 };
 
@@ -63,22 +65,15 @@ app.get('/translation', async (req, res) => {
 app.post('/', async (req, res) => {
   res.end('Got you!')
   const filePath = 'translation.json';
+  const url = req.body.url || '';
+  const paragraphsToTranslate = req.body.data;
 
-  if (req.body.data) {
-    const paragraphsToTranslate = req.body.data;
-    createFile(filePath);
-    await runTranslation('', filePath, paragraphsToTranslate);
-    return;
-  }
+  createFile(filePath);
 
   console.time('Translation');
   console.log('Translation start');
 
-  const url = req.body.url;
-
-  createFile(filePath);
-
-  await runTranslation(url, filePath);
+  await runTranslation(url, filePath, paragraphsToTranslate);
 
   console.timeEnd('Translation');
   console.log('Translation end');
