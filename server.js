@@ -53,7 +53,7 @@ app.get('/', async (req, res) => {
 
 app.get('/translation', async (req, res) => {
 
-  if (!existsSync()) {
+  if (!existsSync('translation.json')) {
     res.json('No translation found');
     return;
   }
